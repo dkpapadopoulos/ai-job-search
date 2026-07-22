@@ -79,17 +79,30 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - [DEALBREAKER_2]
 
 ## Repo Structure
-- `cv/` - LaTeX CV variants (moderncv template, banking style)
-- `cover_letters/` - LaTeX cover letters (custom cover.cls template)
+- `cv/` - LaTeX CV variants (moderncv template, banking style) — working/template area
+- `cover_letters/` - LaTeX cover letters (custom cover.cls template) — working/template area
+- `applications/` - **canonical deliverables**: one dated, self-contained folder per application
+- `documents/applications/` - **outcome archive** (gitignored): `/outcome` archives the submitted CV, cover letter, posting text, and `outcome.md` per application here — distinct from the dated `applications/` deliverable folders above
 - `.claude/skills/` - AI skill definitions for the application workflow
 - `.agents/skills/` - Job search CLI tools
+
+### Application folder convention (ALWAYS)
+Every application's final CV and cover letter **must** be saved under a dated folder:
+`applications/<YYYY-MM-DD>-<company>-<role-slug>/` (e.g. `applications/2026-07-21-acme-program-manager/`).
+Each folder is self-contained and compilable on its own, containing:
+- `application.md` — metadata (`posting_url`, `ats`, `company`, `role`, `date`, `status`); required so `/submit` can locate the apply form. See `applications/TEMPLATE-application.md`.
+- `cv.tex` + `cv.pdf` (compile with `lualatex`)
+- `cover.tex` + `cover.pdf` (compile with `xelatex`), plus `cover.cls` and the `OpenFonts/` directory copied in
+- `interview-prep.md` when interview prep is produced
+Compile in-folder to confirm it is self-contained, then remove aux files (`.aux .log .out`). The `cv/` and `cover_letters/` copies are working files; the dated `applications/` folder is the deliverable.
 
 ## Workflow for New Job Applications
 1. User provides a job posting (URL or text)
 2. **Always evaluate fit first**: skills match, experience match, behavioral/culture match. Present this assessment to the user before proceeding.
-3. If good fit: create targeted CV (`cv/main_<company>_<role>.tex`) and cover letter (`cover_letters/cover_<company>_<role>.tex`)
+3. If good fit: create targeted CV and cover letter, then save both into the dated application folder `applications/<YYYY-MM-DD>-<company>-<role-slug>/` (see Application folder convention above). Working copies may also live in `cv/`/`cover_letters/`.
 4. **Verify both documents** (see Verification Checklist below)
-5. Prepare interview talking points based on the role requirements and your strengths
+5. Prepare interview talking points based on the role requirements and your strengths; save as `interview-prep.md` in the same dated application folder
+6. Optionally run `/submit <folder>` to fill the ATS form in your Chrome for human-reviewed submission — it fills the form and stops for you to review; it **never auto-submits**
 
 **Important:** When mentioning agentic coding or AI tooling in CVs/cover letters, explicitly reference **Claude Code** by name.
 
