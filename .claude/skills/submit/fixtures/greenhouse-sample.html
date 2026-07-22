@@ -1,0 +1,78 @@
+<!--
+  Hand-authored representative fixture (see fixtures/README.md "Provenance").
+  Modeled on the public DOM structure of Greenhouse's #application_form
+  (job-boards.greenhouse.io / boards.greenhouse.io/embed/job_app).
+  Employer/job identity stripped — labels + input structure only.
+-->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Apply — Sample Co (Greenhouse)</title></head>
+<body>
+  <form id="application_form" action="/sample-co/jobs/0000000/submit" method="post" enctype="multipart/form-data">
+
+    <div class="field">
+      <label for="first_name">First Name<span class="required-indicator">*</span></label>
+      <input type="text" id="first_name" name="job_application[first_name]" required>
+    </div>
+
+    <div class="field">
+      <label for="last_name">Last Name<span class="required-indicator">*</span></label>
+      <input type="text" id="last_name" name="job_application[last_name]" required>
+    </div>
+
+    <div class="field">
+      <label for="email">Email<span class="required-indicator">*</span></label>
+      <input type="email" id="email" name="job_application[email]" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone</label>
+      <input type="tel" id="phone" name="job_application[phone]">
+    </div>
+
+    <div class="field">
+      <label for="resume">Resume/CV<span class="required-indicator">*</span></label>
+      <input type="file" id="resume" name="job_application[resume]" accept=".pdf,.doc,.docx" required>
+    </div>
+
+    <div class="field">
+      <label for="cover_letter">Cover Letter</label>
+      <input type="file" id="cover_letter" name="job_application[cover_letter]" accept=".pdf,.doc,.docx">
+    </div>
+
+    <div class="field custom-question">
+      <label for="question_work_auth">Are you legally authorized to work in Switzerland?<span class="required-indicator">*</span></label>
+      <select id="question_work_auth" name="job_application[answers_attributes][0][text_value]" required>
+        <option value="">Select...</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+
+    <div class="field custom-question">
+      <label for="question_salary">What is your desired annual salary (CHF)?<span class="required-indicator">*</span></label>
+      <input type="number" id="question_salary" name="job_application[answers_attributes][1][text_value]" min="0" step="1000" required>
+    </div>
+
+    <div class="field custom-question">
+      <label for="question_why_us">Why do you want to work with us?<span class="required-indicator">*</span></label>
+      <textarea id="question_why_us" name="job_application[answers_attributes][2][text_value]" rows="6" required></textarea>
+    </div>
+
+    <fieldset class="demographic-question">
+      <legend>Voluntary Self-Identification</legend>
+      <div class="field">
+        <label for="gender">Gender</label>
+        <select id="gender" name="job_application[eeo][gender]">
+          <option value="">Select...</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="decline">I don't wish to answer</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <button type="submit">Submit Application</button>
+  </form>
+</body>
+</html>

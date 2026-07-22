@@ -1,0 +1,77 @@
+<!--
+  Hand-authored representative fixture (see fixtures/README.md "Provenance").
+  Modeled on the public DOM structure of Lever's jobs.lever.co application
+  form (form.application-form, li.application-question blocks).
+  Employer/job identity stripped — labels + input structure only.
+-->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Apply — Sample Co (Lever)</title></head>
+<body>
+  <form class="application-form" action="https://jobs.lever.co/sample-co/0000-0000/apply" method="post" enctype="multipart/form-data">
+    <div class="section page-centered application-page">
+
+      <div class="application-question">
+        <div class="application-label">Full Name</div>
+        <input type="text" name="name" required>
+      </div>
+
+      <div class="application-question">
+        <div class="application-label">Email</div>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="application-question">
+        <div class="application-label">Phone</div>
+        <input type="text" name="phone">
+      </div>
+
+      <div class="application-question">
+        <div class="application-label">Current location</div>
+        <input type="text" name="location">
+      </div>
+
+      <div class="application-question resume-upload">
+        <div class="application-label">Resume/CV</div>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+      </div>
+
+      <div class="application-question resume-upload">
+        <div class="application-label">Additional Document (Cover Letter)</div>
+        <input type="file" name="additional_file" accept=".pdf,.doc,.docx">
+      </div>
+
+      <div class="application-question custom-question">
+        <div class="application-label">Are you authorized to work in the country in which this job is based?</div>
+        <select name="cards[custom-work-auth][field0]" required>
+          <option value="">Select...</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="application-question custom-question">
+        <div class="application-label">What are your salary expectations?</div>
+        <input type="text" name="cards[custom-salary][field0]" placeholder="e.g. CHF 200,000 or negotiable">
+      </div>
+
+      <div class="application-question custom-question">
+        <div class="application-label">Why are you interested in this role?</div>
+        <textarea name="cards[custom-why][field0]" rows="6" required></textarea>
+      </div>
+
+      <fieldset class="application-question eeo-question">
+        <legend class="application-label">Veteran Status (Voluntary Self-Identification)</legend>
+        <select name="eeo[veteran_status]">
+          <option value="">Select...</option>
+          <option value="veteran">I am a protected veteran</option>
+          <option value="not_veteran">I am not a protected veteran</option>
+          <option value="decline">I don't wish to answer</option>
+        </select>
+      </fieldset>
+
+      <button type="submit">Submit Application</button>
+    </div>
+  </form>
+</body>
+</html>

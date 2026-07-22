@@ -72,6 +72,9 @@ documents/interview/**
 # Personal job search tracking
 job_search_tracker.csv
 
+# Personal Claude Code permission overrides (may hold broad local permissions)
+.claude/settings.local.json
+
 # Gmail sync state (message IDs, subjects - personal data)
 gmail_sync/
 
