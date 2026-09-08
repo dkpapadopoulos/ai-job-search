@@ -3,16 +3,23 @@
 <!-- Zurich, Switzerland edition. Personalize with `/setup --section search`:
      replace the [YOUR_...] placeholders with your own target roles and skills. -->
 
-## Installed portal CLIs (manual opt-in only)
+## Installed portal CLIs (primary for `/scrape`)
 
-Upstream ships portal-search CLIs under `.agents/skills/` (`linkedin-search`, `freehire-search`, Danish boards). **This fork's `/scrape` does not run them** — WebSearch/Tavily with the `site:` queries below is the backend (see the "Note on portal CLIs" in `SKILL.md`). Use a CLI only when explicitly asked.
+Portal-search CLIs live under `.agents/skills/`. `/scrape` Step 1b runs every **enabled** one
+first, then covers the rest of this market through the WebSearch/Tavily `site:` queries below.
+For this fork that means `linkedin-search` and `freehire-search` run as CLIs; the Danish demo
+boards ship `enabled: false` and stay off unless you enable them. Swiss boards (jobs.ch,
+jobscout24.ch) have no CLI, so they are searched through the queries below — the same path the
+watchlist uses.
+
+**Language scope:** write every query category in every language listed in your CLAUDE.md Languages table (typically 1-2, sometimes more). A posting requiring a language you have *not* declared, as a job condition, is excluded before scoring; a posting requiring a *higher level* than you declared in a language you *do* work in is flagged for your own judgment, not excluded — see `04-job-evaluation.md`'s Language Gate, the single source of truth for this rule. Translate each category's keywords rather than machine-translating word-for-word (e.g. "Frontend Developer" -> "Desarrollador Frontend", not a literal word-for-word translation) if you work in more than one language.
 
 ## Search Sites
 
-The scraper uses built-in **WebSearch** (or Tavily) with `site:` filters. Sources:
+Everything a portal CLI does not cover is searched with **Tavily** (when configured) or built-in **WebSearch**, using `site:` filters. Sources:
 
 Universal (work everywhere):
-- **linkedin.com/jobs** — filter by Zurich / Switzerland in the query (discovery only; pages are login-gated)
+- **linkedin.com/jobs** — covered by the `linkedin-search` CLI in Step 1b; the `site:` query below is the fallback when that CLI is unavailable or fails (discovery only either way; posting pages are login-gated)
 - **indeed.com** / **ch.indeed.com** — global + Swiss aggregator
 - **Google Jobs** — via a plain `[role] jobs Zurich` search
 - Company career pages — see `watchlist.md` for the curated Zurich employer list (preferred for direct monitoring via `/scrape watchlist`)
@@ -23,6 +30,8 @@ Swiss boards (Zurich market):
 - **jobscout24.ch** — Swiss general board
 
 ## Query Templates
+
+**Organize by function, not job title.** The same underlying work carries different titles across companies and markets (a "Data Scientist" role at one employer may be posted as "Insights Analyst" or "Data Consultant" at another). Name each priority category after the function it covers, and list several plausible job titles as query variants within that category rather than betting an entire priority tier on one exact title string.
 
 Queries are grouped by priority and combined with Zurich/Switzerland location terms.
 Rank your own categories by **fit × growth × earning potential** via `/setup --section search`.
@@ -70,3 +79,17 @@ Flag rather than silently drop: mark language-excluded roles with a `language_fl
 
 Only surface postings from the **last 14 days** (stale postings are usually filled or
 closed). Mark older `seen_jobs.json` entries `expired` rather than deleting them.
+
+## Location Filter
+
+When evaluating results, verify the job location is within reasonable commute distance from your home. Define acceptable areas:
+- Zurich city and surrounding areas
+- [ACCEPTABLE_AREA_1]
+- [ACCEPTABLE_AREA_2]
+- [BORDERLINE_AREA] (borderline - ~X min by transit)
+- [TOO_FAR_AREA] (too far)
+
+## Adapting Queries
+
+If the user specifies a focus area, select queries from the matching category and also generate 2-3 custom queries for that focus. For example:
+- "/scrape [focus_area]" -> relevant category queries + custom focus-specific queries
