@@ -89,6 +89,8 @@ job_search_tracker.csv
 
 # Personal Claude Code permission overrides (may hold broad local permissions)
 .claude/settings.local.json
+.claude/.cozempic-init.lock
+.claude/settings.*.bak
 
 # Gmail sync state (message IDs, subjects - personal data)
 gmail_sync/
