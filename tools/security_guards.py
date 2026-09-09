@@ -83,6 +83,11 @@ REQUIRED_IGNORE_RULES = [
     "documents/diplomas/**",
     "documents/references/**",
     "documents/applications/**",
+    # This fork's dated deliverable folders hold the same artifacts as
+    # documents/applications/** above (tailored CV, cover letter, interview prep).
+    # Deny-by-default inside each dated folder; application.md metadata is
+    # re-included via the allowlisted negation below.
+    "applications/*/*",
     "documents/postings/**",
     # Belt-and-braces, not the primary guard: nothing writes here.
     # /interview's prep packs land under documents/applications/**, above.
@@ -121,6 +126,7 @@ ALLOWED_IGNORE_NEGATIONS = {
     "!cv/main_example.tex",
     "!cover_letters/cover_example.tex",
     "!documents/**/.gitkeep",
+    "!applications/*/application.md",
 }
 
 # Hook commands the template legitimately ships, as "<Event>:<command>" strings.

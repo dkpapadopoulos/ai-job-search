@@ -84,6 +84,16 @@ documents/postings/**
 documents/interview/**
 !documents/**/.gitkeep
 
+# This fork's canonical deliverable folders: applications/<YYYY-MM-DD>-<company>-<role-slug>/.
+# The same artifacts documents/applications/** covers above (tailored CV, cover letter,
+# interview prep) land here by CLAUDE.md's folder convention, so they get the same treatment.
+# Deny-by-default rather than naming cv.*/cover.*/interview-prep.md one by one: a future
+# artifact type added to the folder is then private automatically instead of silently tracked.
+# application.md is re-included - it is metadata (posting URL, ATS, company, role, date,
+# status), carries no document text, and is what /submit reads to find the apply form.
+applications/*/*
+!applications/*/application.md
+
 # Personal job search tracking
 job_search_tracker.csv
 
