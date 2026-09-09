@@ -79,9 +79,16 @@ site:jobs.ch "Program Manager" Zürich
 
 ## Language Filter
 
-Zurich postings are frequently written in German. If your working language is English,
-consider excluding German-only postings at evaluation time (set this in your profile's
-language preferences — e.g. "skip postings that require German/Swiss-German fluency").
+Your working languages and levels are in CLAUDE.md's Languages table. When filtering scraped
+results, apply `04-job-evaluation.md`'s Language Gate: a posting requiring a language you have
+not declared at all is excluded; a posting requiring a higher level than you declared in a
+language you *do* work in is **not** excluded — flag it clearly instead (see `SKILL.md`'s Step 3
+"Quick Fit Assessment" for how the flag surfaces in `/scrape` output).
+
+**Postings simply *written* in a language you don't work in, that don't require it on the job,
+are fine.** This matters in Zurich specifically: many postings are written in German for roles
+that are actually worked in English, so excluding on the language of the ad rather than on a
+stated requirement would silently discard good matches.
 Flag rather than silently drop: record the outcome in `seen_jobs.json` with the canonical
 fields `language_gate` (PASS/FAIL/FLAG) and `language_note` (the quoted requirement), as
 documented in Step 4's schema, so excluded roles stay visible in dedup.
