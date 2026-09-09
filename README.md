@@ -210,6 +210,7 @@ ai-job-search/
 │   │   ├── interview.md               # /interview stage-specific prep pack + mock interview
 │   │   ├── html-report.md             # /html-report generate application tracker dashboard
 │   │   ├── notion-sync.md             # /notion-sync one-way pipeline view in a Notion database
+│   │   ├── submit.md                  # /submit fill a company ATS form in your Chrome (never submits)
 │   │   └── reset.md                   # /reset wipe profile data or documents folder
 │   ├── skills/
 │   │   ├── job-application-assistant/  # Core application skill
@@ -222,6 +223,7 @@ ai-job-search/
 │   │   │   ├── 06-cover-letter-templates.md # LaTeX cover letter templates
 │   │   │   └── 07-interview-prep.md   # STAR examples + interview framework
 │   │   ├── job-scraper/               # Job search orchestration
+│   │   ├── submit/                    # /submit ATS form-filler (answer bank, fixtures)
 │   │   └── upskill/                   # /upskill skill gap analysis and learning plan
 │   └── settings.json                  # Claude Code permissions (shared, scoped)
 ├── .agents/skills/                    # Job portal CLI tools
@@ -237,6 +239,8 @@ ai-job-search/
 │   ├── cover.cls                      # Custom cover letter LaTeX class
 │   ├── cover_example.tex              # Example cover letter (structural reference + CI smoke test)
 │   └── OpenFonts/                     # Lato + Raleway fonts
+├── applications/                      # Canonical deliverables: one dated, self-contained folder per application
+│   └── TEMPLATE-application.md        # Metadata template (posting_url, ats, company, role, date, status)
 ├── templates/                         # Custom templates registered via /add-template
 │   └── README.md                      # Folder layout instructions
 ├── documents/                         # Career source materials for /setup Path A and /expand
@@ -246,6 +250,7 @@ ai-job-search/
 │   ├── diplomas/                      # Degree certificates and transcripts
 │   ├── references/                    # Reference letters
 │   └── applications/                  # Past application records (<company>_<role>/)
+├── .mcp.json                          # Tavily MCP server definition (key read from $TAVILY_API_KEY)
 ├── .github/workflows/ci.yml           # CI: LaTeX smoke compiles, skill lint, CLI typechecks
 ├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
 ├── tools/

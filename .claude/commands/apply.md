@@ -326,12 +326,12 @@ Before presenting the output, you must create the dated application folder and s
 mkdir -p applications/<YYYY-MM-DD>-<company>-<role-slug>/
 ```
 
-Then copy or move the files:
-- `cv/main_<company>_<role>.tex` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cv.tex`
+Then copy or move the files, using the `<CV_EXT>`/`<COVER_EXT>` resolved in Step 2 (`.tex` unless a custom template is active):
+- `cv/main_<company>_<role><CV_EXT>` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cv<CV_EXT>`
 - `cv/main_<company>_<role>.pdf` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cv.pdf`
-- `cover_letters/cover_<company>_<role>.tex` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cover.tex`
+- `cover_letters/cover_<company>_<role><COVER_EXT>` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cover<COVER_EXT>`
 - `cover_letters/cover_<company>_<role>.pdf` → `applications/<YYYY-MM-DD>-<company>-<role-slug>/cover.pdf`
-- Copy `cover_letters/cover.cls` and the `cover_letters/OpenFonts/` directory into the dated folder so it is self-contained
+- Copy whatever the active template needs alongside its source so the folder compiles on its own. For the **stock LaTeX** cover letter that is `cover_letters/cover.cls` and the `cover_letters/OpenFonts/` directory; for a template registered via `/add-template`, copy the assets its manifest declares instead.
 
 **Additionally, create `application.md`** in the same folder using the template from `applications/TEMPLATE-application.md`. Fill in:
 - `posting_url`: the parsed URL from Step 0 (or `unknown` if the input was pasted text, not a URL)

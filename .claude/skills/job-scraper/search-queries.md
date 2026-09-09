@@ -60,6 +60,16 @@ site:linkedin.com/jobs "[YOUR_TERTIARY_JOB_TITLE]" Zurich
 "[YOUR_TERTIARY_JOB_TITLE]" jobs Zurich OR remote Switzerland
 ```
 
+### Priority 4: Broader [YOUR_BROADER_FIELD]
+
+Wider net, run by `/scrape broad` rather than a default run.
+
+```
+site:linkedin.com/jobs "[YOUR_BROADER_JOB_TITLE]" Zurich Switzerland
+site:jobs.ch "[YOUR_BROADER_JOB_TITLE]" Zürich
+"[YOUR_BROADER_JOB_TITLE]" OR "[YOUR_BROADER_KEYWORD]" jobs Zurich
+```
+
 <!-- Worked example (a program-management-flavored Zurich search):
 site:linkedin.com/jobs "Program Manager" Zurich Switzerland
 site:linkedin.com/jobs ("Technical Program Manager" OR "Engineering Program Manager") Zurich
@@ -72,13 +82,21 @@ site:jobs.ch "Program Manager" Zürich
 Zurich postings are frequently written in German. If your working language is English,
 consider excluding German-only postings at evaluation time (set this in your profile's
 language preferences — e.g. "skip postings that require German/Swiss-German fluency").
-Flag rather than silently drop: mark language-excluded roles with a `language_flag` in
-`seen_jobs.json` so they stay visible in dedup.
+Flag rather than silently drop: record the outcome in `seen_jobs.json` with the canonical
+fields `language_gate` (PASS/FAIL/FLAG) and `language_note` (the quoted requirement), as
+documented in Step 4's schema, so excluded roles stay visible in dedup.
 
 ## Recency
 
-Only surface postings from the **last 14 days** (stale postings are usually filled or
-closed). Mark older `seen_jobs.json` entries `expired` rather than deleting them.
+Only surface postings from the **last 14 days**, or with an application deadline that has
+not yet passed (stale postings are usually filled or closed). If a posting date cannot be
+determined, include it but flag as "date unknown".
+
+Age alone is **not** `expired`. That status has a precise meaning downstream - the posting
+was confirmed closed at source, or its deadline has passed (see `/rank`'s rule, and Step 2's
+closed-at-source detection). Since `SKILL.md` Rule 2 treats `expired` as already-seen, marking
+a merely-old but still-open posting `expired` would suppress it from every future run. Leave
+such entries in `seen_jobs.json` with the status they already carry, and never delete them.
 
 ## Location Filter
 

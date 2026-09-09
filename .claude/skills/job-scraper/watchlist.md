@@ -109,7 +109,7 @@ can't call. For these, `/scrape` uses `WebSearch` scoped to the careers domain i
 ## Tier 3 — Proprietary SPA / other (search-driven; some directly fetchable)
 
 These run their own JS-rendered career sites with no public GET API. `/scrape` discovers
-roles via `WebSearch` (company + "careers" + Zurich + role). Two are plain static HTML and
+roles via `WebSearch` (company + "careers" + Zurich + role). Three are plain static HTML and
 **can** be fetched directly (marked ✅ fetchable).
 
 | Company | Sector | Careers URL | Direct-fetchable? |

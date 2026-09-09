@@ -25,7 +25,7 @@ It is **country-agnostic**: the sites and query terms come from `search-queries.
 
 > **Note on portal CLIs:** portal-search CLIs live under `.agents/skills/`. Step 1b runs every
 > **enabled** one first — for this fork `linkedin-search` and `freehire-search`; the Danish demo
-> boards ship `enabled: false`. Sources with no CLI (jobs.ch, jobscout24.ch, Indeed, Google Jobs,
+> boards ship `enabled: false`. Sources with no CLI (jobs.ch, jobscout24.ch, jobup.ch, Indeed, Google Jobs,
 > company career pages) are covered by the Step 1c Tavily/WebSearch pass. Mind the LinkedIn CLI's
 > keep-volume-low ToS caveat in its SKILL.md.
 
@@ -41,6 +41,7 @@ Optional arguments:
 - A focus area, e.g. "/scrape data science" or "/scrape geophysics"
 - "broad" to run all search categories, e.g. "/scrape broad"
 - "watchlist" to sweep the curated company career pages in `watchlist.md` instead of running keyword searches, e.g. "/scrape watchlist" (see "Watchlist mode" below)
+- "health" to run the portal health check only (Step 4.75), without searching, deduplicating, or presenting jobs - e.g. "/scrape health", or "/scrape health jobnet" to probe one portal even if disabled
 
 ---
 
@@ -87,7 +88,7 @@ If a CLI tool exits with a non-zero code, log the error message and continue —
 #### 1c. WebSearch fallback
 
 Use this pass for:
-- Sources listed in `search-queries.md` that do **not** have a corresponding directory under `.agents/skills/` — for this fork that means jobs.ch, jobscout24.ch, Indeed, Google Jobs and company career pages
+- Sources listed in `search-queries.md` that do **not** have a corresponding directory under `.agents/skills/` — for this fork that means jobs.ch, jobscout24.ch, jobup.ch, Indeed, Google Jobs and company career pages
 - Any portal whose CLI fails at runtime
 - When bun is unavailable (Step 1a failed)
 
@@ -294,7 +295,7 @@ If the user picks a number, invoke the **job-application-assistant** skill workf
 ### Step 5b: Write the markdown report (ALWAYS — do not skip)
 
 The chat presentation in Step 5 is ephemeral. Every run must also persist a ranked report file so the
-user has a durable, openable artifact. Use the **Write** tool (this skill has no Bash) to write:
+user has a durable, openable artifact. Use the **Write** tool to write:
 
 ```
 job_scraper/job_matches_<YYYY-MM-DD>.md
@@ -324,7 +325,7 @@ _IC / research / intern / sales / language-excluded — recorded for dedup, weak
 - **<Company>** — <Title> (<Location>)<⚠️ flag if language-excluded> · [link](…)
 ```
 
-Render any `language_flag` / exclusion note as a `⚠️` marker so excluded roles are visibly tagged. After
+Render a non-PASS `language_gate` (with its `language_note`) or other exclusion note as a `⚠️` marker so excluded roles are visibly tagged. After
 writing, tell the user the path. (Note: `job_scraper/*.md` is gitignored by default — it's a local
 artifact; only force-add it if the user wants it committed.)
 
@@ -340,14 +341,17 @@ If the user decides to apply to any job, the tracker row is written by **job-app
 
 When invoked with `watchlist`, sweep the curated employers in `watchlist.md` (this directory)
 directly, instead of running the keyword searches in `search-queries.md`. This monitors specific
-target companies' career pages for new postings. Steps 0, 3, 4, 5, 5b, 6 (state, fit, dedup, present,
-write report, tracker) are unchanged — only the search/fetch changes:
+target companies' career pages for new postings. Steps 0, 2.5, 3, 4, 4.5, 5, 5b, 6 (state, mass-posting check, fit, dedup,
+referral links, present, write report, tracker) are unchanged — only the search/fetch changes.
+2.5 and 4.5 are included because the Step 5 template renders their output (the mass-posting note
+in the Title cell, and the Contacts block); Step 4.75's portal health check is the one step that
+does not apply, since a watchlist sweep runs no portal CLI — omit its `health:` lines:
 
 1. Read `watchlist.md`. Note the **target location filter** (the Zurich-area town list) at the top.
 2. Process each company according to its **tier**:
    - **Tier 1 (Public JSON API):** `WebFetch` (or `tavily_extract`) the company's `Fetch URL`. It returns JSON. Parse the postings, then keep only those whose location field matches the location filter. **Match both `Zurich` and `Zürich` explicitly** — a substring test for `urich` silently misses the umlaut spelling (`ü` breaks the `u-r-i-c-h` run), which several boards use. Lowercase and test for `zurich` OR `zürich` plus the suburb names. Extract title, location, URL, and posting date from the JSON fields named in `watchlist.md`. This is the most reliable tier — prefer it.
    - **Tier 2 (Workday):** do NOT try to `WebFetch` the board URL (it's a JS shell, and the real API needs a POST). Instead run `WebSearch` scoped to the careers domain, e.g. `site:roche.wd3.myworkdayjobs.com Zürich <your role keywords>`. Fetch any promising individual job URLs that are static.
-   - **Tier 3 (SPA / other):** run `WebSearch` like `<company> careers Zurich <your role keywords>` (and use the Careers URL for context). For the two rows marked ✅ static HTML (IBM Research, Disney Research), `WebFetch`/`tavily_extract` the careers URL directly.
+   - **Tier 3 (SPA / other):** run `WebSearch` like `<company> careers Zurich <your role keywords>` (and use the Careers URL for context). For the three rows marked ✅ static HTML (IBM Research, Disney Research, SAP — SAP's row carries a verified parse recipe), `WebFetch`/`tavily_extract` the careers URL directly.
 3. For every candidate posting, apply the **location filter** strictly — discard anything not in the Zurich area. Many of these boards are global, so most postings will not match; that is expected.
 4. Deduplicate against `seen_jobs.json` and `job_search_tracker.csv` exactly as in Step 4, then run the Step 3 fit check and present via Step 5. In the results table, add the **company** as the source so it's clear which watchlist employer each hit came from.
 5. Be efficient: a watchlist sweep can touch 20+ companies. Run the Tier-1 fetches in parallel (Agent tool or parallel calls), and for Tier 2/3 prioritize the companies most aligned with the user's focus area if one was given (e.g. "/scrape watchlist data science").
@@ -360,7 +364,7 @@ write report, tracker) are unchanged — only the search/fetch changes:
 
 ## Important Rules
 
-1. **Never fabricate job postings.** Only present jobs found via actual Tavily/WebSearch/WebFetch results.
+1. **Never fabricate job postings.** Only present jobs from actual CLI search/detail output, or actual Tavily/WebSearch/WebFetch results.
 2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting. Treat `ranked`, `expired`, `drafted`, `applied`, and `discarded` statuses as already-seen.
 3. **Focus on configured geographic area.** Skip jobs that require relocation or are clearly outside commute range.
 4. **Only open positions.** Skip postings with expired deadlines or those marked as closed.
